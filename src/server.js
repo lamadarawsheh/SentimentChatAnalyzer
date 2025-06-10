@@ -1,0 +1,48 @@
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const path = require('path');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// Serve static files
+app.use(express.static(__dirname));
+app.use('/styles', express.static(path.join(__dirname, '../src/styles')));
+app.use('/admin', express.static(path.join(__dirname, '../src/admin')));
+app.use('/client', express.static(path.join(__dirname, '../src/client')));
+
+// Routes
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/client.html'));
+});
+
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/admin.html'));
+});
+
+// Socket.io connection
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+
+    socket.on('clientMessage', (message) => {
+        if (!message) return; // Don't process empty messages
+        console.log('Client message:', message);
+        io.emit('clientMessage', message.trim());
+    });
+
+    socket.on('adminMessage', (message) => {
+        console.log('Admin message:', message);
+        io.emit('adminMessage', message);
+    });
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
