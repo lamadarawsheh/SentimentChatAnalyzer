@@ -2,6 +2,18 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
+const multer = require('multer');
+const { spawn } = require('child_process');
+const { SpeechClient } = require('@google-cloud/speech');
+const config = require('../config');
+
+// Initialize Google Speech-to-Text client
+const speechClient = new SpeechClient(config.googleSpeech);
+
+// Configure multer for file uploads
+const upload = multer({
+    dest: 'uploads/'
+});
 
 const app = express();
 const server = http.createServer(app);
@@ -21,6 +33,8 @@ app.get('/', (req, res) => {
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/admin.html'));
 });
+
+
 
 // Socket.io connection
 io.on('connection', (socket) => {

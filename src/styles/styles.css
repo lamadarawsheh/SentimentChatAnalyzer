@@ -109,10 +109,14 @@ body {
 }
 
 .chat-input {
-    padding: 20px;
     display: flex;
-    gap: 10px;
+    align-items: center;
+    padding: 15px;
     border-top: 1px solid #eee;
+}
+
+.chat-input button {
+    margin-left: 10px;
 }
 
 input[type="text"] {
@@ -229,4 +233,7 @@ button:hover {
 .recent-messages h4 {
     margin-bottom: 15px;
     color: #666;
+}
+.voice-status , .voice-indicator span {
+color: black;
 }

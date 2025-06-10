@@ -18,6 +18,14 @@
         <div class="chat-input">
             <input type="text" id="messageInput" placeholder="اكتب رسالتك هنا...">
             <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+            <div class="voice-container">
+                <button id="voiceBtn" title="تسجيل الصوت"><i class="fas fa-microphone"></i></button>
+            </div>
+            <div id="voiceStatus" class="voice-status">
+                <div class="voice-indicator">
+                <span>اضغط للتسجيل</span>
+            </div>
+            </div>
         </div>
     </div>
     <script src="socket.io/socket.io.js"></script>
