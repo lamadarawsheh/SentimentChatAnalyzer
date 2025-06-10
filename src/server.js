@@ -47,12 +47,13 @@ io.on('connection', (socket) => {
     socket.on('clientMessage', (message) => {
         if (!message) return; // Don't process empty messages
         console.log('Client message:', message);
-        io.emit('clientMessage', message.trim());
+        socket.broadcast.emit('clientMessage', message.trim()); // Send to all except sender
     });
 
     socket.on('adminMessage', (message) => {
+        if (!message) return; // Don't process empty messages
         console.log('Admin message:', message);
-        io.emit('adminMessage', message);
+        socket.broadcast.emit('adminMessage', message.trim()); // Send to all except sender
     });
 });
 
