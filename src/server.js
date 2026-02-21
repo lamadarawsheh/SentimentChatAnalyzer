@@ -2,6 +2,18 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
+const multer = require('multer');
+const { spawn } = require('child_process');
+const { SpeechClient } = require('@google-cloud/speech');
+const config = require('../config');
+
+// Initialize Google Speech-to-Text client
+const speechClient = new SpeechClient(config.googleSpeech);
+
+// Configure multer for file uploads
+const upload = multer({
+    dest: 'uploads/'
+});
 
 const app = express();
 const server = http.createServer(app);
@@ -22,6 +34,8 @@ app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/admin.html'));
 });
 
+
+
 // Socket.io connection
 io.on('connection', (socket) => {
     console.log('A user connected');
@@ -33,12 +47,13 @@ io.on('connection', (socket) => {
     socket.on('clientMessage', (message) => {
         if (!message) return; // Don't process empty messages
         console.log('Client message:', message);
-        io.emit('clientMessage', message.trim());
+        socket.broadcast.emit('clientMessage', message.trim()); // Send to all except sender
     });
 
     socket.on('adminMessage', (message) => {
+        if (!message) return; // Don't process empty messages
         console.log('Admin message:', message);
-        io.emit('adminMessage', message);
+        socket.broadcast.emit('adminMessage', message.trim()); // Send to all except sender
     });
 });
 
